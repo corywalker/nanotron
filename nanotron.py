@@ -3,6 +3,7 @@ from nxt.motor import *
 from nxt.sensor import *
 import os
 import display
+import time
 
 class Nanotron:
     play_port = PORT_A
@@ -60,14 +61,14 @@ class Nanotron:
     def disk_mode(self, irc):
         self.reboot(irc)
         time.sleep(.25)
-        self.diskmodecombo(3)
-        time.sleep(5)
+        self.diskmodecombo(8)
+        time.sleep(15)
         while not self.is_mounted():
             display.myprint("Having trouble putting the iPod into disk mode!", irc)
             self.reboot(irc)
             time.sleep(.25)
-            self.diskmodecombo(4)
-            time.sleep(5)
+            self.diskmodecombo(8)
+            time.sleep(15)
     def is_mounted(self):
         return os.path.exists(self.IPODPATH + "/Notes")
     def get_status(self):
