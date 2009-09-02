@@ -1,0 +1,3 @@
+This depends on PyUSB patched version of nxt-python (contact cmwslw for patch)
+
+Edit configuration variables to suit your setup.
