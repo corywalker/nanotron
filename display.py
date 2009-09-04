@@ -1,13 +1,15 @@
 
 logfilename = 'nanotron.log'
+verbosity = 0
 
-def myprint(data, irc = None):
-    global logfile
-    print(data)
-    if irc != None: irc.log(data)
-    logfile = open(logfilename, "w")
-    logfile.write(data + "\n")
-    logfile.close()
+def myprint(data, verb = 0, irc = None):
+    if verb <= verbosity:
+        global logfile
+        print(data)
+        if irc != None: irc.log(data)
+        logfile = open(logfilename, "w")
+        logfile.write(data + "\n")
+        logfile.close()
 
 def print_status(address, status1, status2=3, irc=None):
     fullstatus = "%8x: " % address
@@ -27,4 +29,4 @@ def print_status(address, status1, status2=3, irc=None):
         if status1 != 2: fullstatus = fullstatus + "Freeze! <<<========== INTERESTING! =========="
         else: fullstatus = fullstatus + "Freeze!"
     #Printing everything
-    myprint(fullstatus, irc)
+    myprint(fullstatus, 0, irc)

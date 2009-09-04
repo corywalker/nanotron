@@ -9,9 +9,9 @@ class Nanotron:
     play_port = PORT_A
     select_port = PORT_B
     menu_port = PORT_C
-    play_force = 65
-    select_force = 65
-    menu_force = 65
+    play_force = 63
+    select_force = 63
+    menu_force = 63
     touch_port = PORT_1
     light_port = PORT_3
     IPODPATH = '/media/ipod'
@@ -43,40 +43,54 @@ class Nanotron:
         self.release_select()
         self.release_menu()
     def diskmodecombo(self, seconds):
+        display.myprint("Disk mode combo down", 2)
         self.press_select()
         self.press_play()
+        display.myprint("waiting %u seconds for disk mode" % seconds, 2)
         time.sleep(seconds)
         self.reset()
+        display.myprint("Disk mode combo up", 2)
     def rebootcombo(self, seconds):
+        display.myprint("Reboot combo down", 2)
         self.press_select()
         self.press_menu()
+        display.myprint("unmounting before reboot", 1)
+        if self.is_mounted(): os.system('umount /media/ipod')
+        display.myprint("waiting %u seconds for reboot" % seconds, 2)
         time.sleep(seconds)
         self.reset()
+        display.myprint("Reboot combo up", 2)
     def reboot(self, irc):
+        display.myprint("Rebooting...", 1)
         self.rebootcombo(5.5)
         while self.is_mounted():
-            display.myprint("Having trouble resetting the iPod!", irc)
+            display.myprint("Having trouble resetting the iPod!", 0, irc)
             self.rebootcombo(8)
             time.sleep(0.5)
     def disk_mode(self, irc):
+        display.myprint("Trying to enter Disk mode...", 1)
         self.reboot(irc)
         time.sleep(.25)
-        self.diskmodecombo(8)
-        time.sleep(15)
+        self.diskmodecombo(10)
+        time.sleep(10)
         while not self.is_mounted():
-            display.myprint("Having trouble putting the iPod into disk mode!", irc)
+            display.myprint("Having trouble putting the iPod into disk mode!", 0, irc)
             self.reboot(irc)
             time.sleep(.25)
-            self.diskmodecombo(8)
-            time.sleep(15)
+            self.diskmodecombo(10)
+            time.sleep(10)
+        display.myprint("entered disk mode...", 1)
     def is_mounted(self):
         return os.path.exists(self.IPODPATH + "/Notes")
     def get_status(self):
         if self.is_mounted():
-            return 0 #Crash
+            display.myprint("WORKS", 1)
+            return 1 #Works
         else:
-            time.sleep(8)
+            time.sleep(7)
             if self.is_mounted():
-                return 1 #Works
+                display.myprint("CRASH", 1)
+                return 0 #Crash
             else:
+                display.myprint("FREEZE", 1)
                 return 2 #Freeze
