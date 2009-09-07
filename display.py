@@ -1,13 +1,11 @@
+import config
 
-logfilename = 'nanotron.log'
-verbosity = 0
-
-def myprint(data, verb = 0, irc = None):
-    if verb <= verbosity:
+def myprint(data, verbosity = 0, irc = None):
+    if verbosity <= config.LOG_VERBOSITY:
         global logfile
         print(data)
         if irc != None: irc.log(data)
-        logfile = open(logfilename, "w")
+        logfile = open(config.LOG_FILENAME, "a")
         logfile.write(data + "\n")
         logfile.close()
 

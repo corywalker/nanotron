@@ -4,17 +4,18 @@ from nxt.sensor import *
 import os
 import display
 import time
+import config
 
 class Nanotron:
     play_port = PORT_A
     select_port = PORT_B
     menu_port = PORT_C
-    play_force = 63
-    select_force = 63
-    menu_force = 63
+    play_force = config.BUTTON_FORCE
+    select_force = config.BUTTON_FORCE
+    menu_force = config.BUTTON_FORCE
     touch_port = PORT_1
     light_port = PORT_3
-    IPODPATH = '/media/ipod'
+    IPODPATH = config.IPOD_PATH
     def __init__(self):
         #self.myprint = myprint
         try:
@@ -62,28 +63,38 @@ class Nanotron:
         display.myprint("Reboot combo up", 2)
     def reboot(self, irc):
         display.myprint("Rebooting...", 1)
-        self.rebootcombo(5.5)
-        while self.is_mounted():
-            display.myprint("Having trouble resetting the iPod!", 0, irc)
-            self.rebootcombo(8)
-            time.sleep(0.5)
+        while True:
+            self.rebootcombo(config.REBOOT_COMBO_WAIT)
+            if self.is_mounted():
+                display.myprint("Having trouble resetting the iPod!", 0, irc)
+            else: break
     def disk_mode(self, irc):
         display.myprint("Trying to enter Disk mode...", 1)
-        self.reboot(irc)
-        time.sleep(.25)
-        self.diskmodecombo(10)
-        time.sleep(10)
-        while not self.is_mounted():
-            display.myprint("Having trouble putting the iPod into disk mode!", 0, irc)
+        while True:
             self.reboot(irc)
             time.sleep(.25)
-            self.diskmodecombo(10)
-            time.sleep(10)
+            self.diskmodecombo(config.DISKMODE_COMBO_WAIT)
+            time.sleep(config.DISKMODE_DELAY)
+            if not self.is_mounted():
+                display.myprint("Having trouble putting the iPod into disk mode!", 0, irc)
+            else: break
         display.myprint("entered disk mode...", 1)
     def is_mounted(self):
         return os.path.exists(self.IPODPATH + "/Notes")
     def get_status(self):
         if self.is_mounted():
+            display.myprint("WORKS", 1)
+            return 1 #Works
+        start = time.time() #FIXME: might be incompatible on windows
+	while not self.is_mounted():
+            if time.time() - start > config.CRASH_THRESHOLD:
+                display.myprint("FREEZE", 1)
+                return 2 #Freeze
+        if self.is_mounted():
+                display.myprint("CRASH", 1)
+                return 0 #Crash
+
+        '''if self.is_mounted():
             display.myprint("WORKS", 1)
             return 1 #Works
         else:
@@ -93,4 +104,4 @@ class Nanotron:
                 return 0 #Crash
             else:
                 display.myprint("FREEZE", 1)
-                return 2 #Freeze
+                return 2 #Freeze'''

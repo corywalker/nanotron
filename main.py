@@ -5,9 +5,6 @@ import os
 import nanotron
 import irc
 import dispatcher
-
-IPODMODEL = "4G Nano"
-versions = "latest" #TODO: find out what this is
                                   
 class TronError(Exception):
   pass
@@ -15,9 +12,9 @@ class TronError(Exception):
 try:
     my_nanotron = nanotron.Nanotron()
     dispatcher = dispatcher.Dispatcher(my_nanotron)
-    dispatcher.run()
     ircbot = irc.IRCBot(dispatcher)
-    ircbot.start("%s, %s" % (IPODMODEL, versions))
+    dispatcher.run()
+    ircbot.start()
     dispatcher.shutdown()
     
 except KeyboardInterrupt as e:

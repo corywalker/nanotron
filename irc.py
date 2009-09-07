@@ -2,14 +2,7 @@ import time
 import nanotron
 import threading
 import irclib
-
-SERVER = 'irc.freenode.net'
-PORT = 6667
-NICKNAME = 'CmwslwTron'
-REALNAME = 'Nanotron-3000'
-PASSWORD = 'mypass'
-CHANNEL = '#linux4nano-nanotron'
-IPODMODEL = "Nano 4G, 8GB, Winpod, 1.0.3"
+import config
 
 class IRCQueue(threading.Thread):
   def __init__(self, bot):
@@ -71,10 +64,9 @@ class IRCBot(irclib.SimpleIRCClient):
 
 
   def _connect(self):
-    global SERVER, PORT, NICKNAME, REALNAME
     while True:
       try:
-        self.connect(SERVER, PORT, NICKNAME, None, ircname = REALNAME)
+        self.connect(config.IRC_SERVER, config.IRC_PORT, config.IRC_NICKNAME, None, ircname = config.IRC_REALNAME)
         break;
       except irclib.ServerConnectionError:
         time.sleep(5)
@@ -85,12 +77,11 @@ class IRCBot(irclib.SimpleIRCClient):
 
 
   def _on_kick(self, c, e):
-    global CHANNEL
     self.account[e.arguments()[0]] = None
-    if e.arguments()[0] == c.get_nickname() and e.target() == CHANNEL:
-      self.queue.append(self.connection.privmsg, "ChanServ", "unban " + CHANNEL)
-      self.queue.append(self.connection.join, CHANNEL)
-      self.queue.append(self.connection.privmsg, CHANNEL, "Ouch, I don't like being kicked!")
+    if e.arguments()[0] == c.get_nickname() and e.target() == config.IRC_CHANNEL:
+      self.queue.append(self.connection.privmsg, "ChanServ", "unban " + config.IRC_CHANNEL)
+      self.queue.append(self.connection.join, config.IRC_CHANNEL)
+      self.queue.append(self.connection.privmsg, config.IRC_CHANNEL, "Ouch, I don't like being kicked!")
 
 
   def _on_nick(self, c, e):
@@ -236,16 +227,14 @@ class IRCBot(irclib.SimpleIRCClient):
 
 
   def log(self, message):
-    global CHANNEL
-    self.queue.append(self.connection.privmsg, CHANNEL, message)
+    self.queue.append(self.connection.privmsg, config.IRC_CHANNEL, message)
 
-  def start(self, message):
-    global CHANNEL, NICKNAME, PASSWORD
+  def start(self):
     self._connect()
-    self.queue.append(self.connection.privmsg, "NickServ", "ghost %s %s" % (NICKNAME, PASSWORD))
-    self.queue.append(self.connection.nick, NICKNAME)
-    self.queue.append(self.connection.privmsg, "NickServ", "identify " + PASSWORD)
-    self.queue.append(self.connection.privmsg, "ChanServ", "unban " + CHANNEL)
-    self.queue.append(self.connection.join, CHANNEL)
-    self.queue.append(self.connection.privmsg, CHANNEL, "NanotronIRC for NXT v0.1 alpha starting up... (%s)" % message)
+    self.queue.append(self.connection.privmsg, "NickServ", "ghost %s %s" % (config.IRC_NICKNAME, config.IRC_PASSWORD))
+    self.queue.append(self.connection.nick, config.IRC_NICKNAME)
+    self.queue.append(self.connection.privmsg, "NickServ", "identify " + config.IRC_PASSWORD)
+    self.queue.append(self.connection.privmsg, "ChanServ", "unban " + config.IRC_CHANNEL)
+    self.queue.append(self.connection.join, config.IRC_CHANNEL)
+    self.queue.append(self.connection.privmsg, config.IRC_CHANNEL, "Nanotron starting up... (%s)" % config.IRC_MODEL)
     irclib.SimpleIRCClient.start(self)
