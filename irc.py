@@ -231,10 +231,11 @@ class IRCBot(irclib.SimpleIRCClient):
 
   def start(self):
     self._connect()
-    self.queue.append(self.connection.privmsg, "NickServ", "ghost %s %s" % (config.IRC_NICKNAME, config.IRC_PASSWORD))
+    password = raw_input("Enter your nanotron's IRC password (if it has one): ")
+    self.queue.append(self.connection.privmsg, "NickServ", "ghost %s %s" % (config.IRC_NICKNAME, password))
     self.queue.append(self.connection.nick, config.IRC_NICKNAME)
-    self.queue.append(self.connection.privmsg, "NickServ", "identify " + config.IRC_PASSWORD)
+    self.queue.append(self.connection.privmsg, "NickServ", "identify " + password)
     self.queue.append(self.connection.privmsg, "ChanServ", "unban " + config.IRC_CHANNEL)
     self.queue.append(self.connection.join, config.IRC_CHANNEL)
-    self.queue.append(self.connection.privmsg, config.IRC_CHANNEL, "Nanotron starting up... (%s)" % config.IRC_MODEL)
+    self.queue.append(self.connection.privmsg, config.IRC_CHANNEL, "Nanotron starting up... (%s)" % config.IRC_IPODMODEL)
     irclib.SimpleIRCClient.start(self)

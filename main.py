@@ -12,8 +12,8 @@ class TronError(Exception):
 try:
     my_nanotron = nanotron.Nanotron()
     dispatcher = dispatcher.Dispatcher(my_nanotron)
+    dispatcher.start()
     ircbot = irc.IRCBot(dispatcher)
-    dispatcher.run()
     ircbot.start()
     dispatcher.shutdown()
     

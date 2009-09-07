@@ -1,12 +1,11 @@
 IPOD_PATH = '/media/ipod'
 BUTTON_FORCE = 60
 
-NOTE_WAIT = 3 #wait for note to be written
-BOOT_WAIT = 37.5 #Waiting for boot (my measurings said 33. Farthen)
-DISKMODE_WAIT = 12 #special one: FIXME
-REBOOT_COMBO_WAIT = 5.5
-DISKMODE_COMBO_WAIT = 10
-DISKMODE_DELAY = 12
+BOOT_WAIT = 37.5 #Time for iPod to boot (plus a little extra)
+DISKMODE_WAIT = 10 #Time for OS to mount iPod in disk mode
+NOTE_WAIT = 3 #Time to wait for note file to be written to iPod
+REBOOT_COMBO_WAIT = 5.5 #Time to hold down the reboot combo
+DISKMODE_COMBO_WAIT = 12
 CRASH_THRESHOLD = 7
 
 LOG_FILENAME = 'nanotron.log'
@@ -17,7 +16,6 @@ IRC_NICKNAME = 'CmwslwTron'
 IRC_SERVER = 'irc.freenode.net'
 IRC_PORT = 6667
 IRC_REALNAME = 'Nanotron-3000'
-IRC_PASSWORD = 'mypass'
 IRC_CHANNEL = '#linux4nano-nanotron'
 
 #merge diskmode_wait + diskmode_combo_wait

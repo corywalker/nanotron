@@ -62,23 +62,25 @@ class Nanotron:
         self.reset()
         display.myprint("Reboot combo up", 2)
     def reboot(self, irc):
-        display.myprint("Rebooting...", 1)
+        display.myprint("Rebooting...", 1, irc)
         while True:
             self.rebootcombo(config.REBOOT_COMBO_WAIT)
             if self.is_mounted():
                 display.myprint("Having trouble resetting the iPod!", 0, irc)
             else: break
     def disk_mode(self, irc):
-        display.myprint("Trying to enter Disk mode...", 1)
+        display.myprint("Trying to enter Disk mode...", 1, irc)
         while True:
             self.reboot(irc)
             time.sleep(.25)
             self.diskmodecombo(config.DISKMODE_COMBO_WAIT)
-            time.sleep(config.DISKMODE_DELAY)
-            if not self.is_mounted():
-                display.myprint("Having trouble putting the iPod into disk mode!", 0, irc)
-            else: break
-        display.myprint("entered disk mode...", 1)
+            start = time.time() #FIXME: might be incompatible on windows
+            while not self.is_mounted():
+                if time.time() - start > config.CRASH_THRESHOLD:
+                    display.myprint("Having trouble putting the iPod into disk mode!", 0, irc)
+                    break
+            if self.is_mounted(): break
+        display.myprint("entered disk mode...", 1, irc)
     def is_mounted(self):
         return os.path.exists(self.IPODPATH + "/Notes")
     def get_status(self):
@@ -86,22 +88,9 @@ class Nanotron:
             display.myprint("WORKS", 1)
             return 1 #Works
         start = time.time() #FIXME: might be incompatible on windows
-	while not self.is_mounted():
+        while not self.is_mounted():
             if time.time() - start > config.CRASH_THRESHOLD:
                 display.myprint("FREEZE", 1)
                 return 2 #Freeze
-        if self.is_mounted():
-                display.myprint("CRASH", 1)
-                return 0 #Crash
-
-        '''if self.is_mounted():
-            display.myprint("WORKS", 1)
-            return 1 #Works
-        else:
-            time.sleep(7)
-            if self.is_mounted():
-                display.myprint("CRASH", 1)
-                return 0 #Crash
-            else:
-                display.myprint("FREEZE", 1)
-                return 2 #Freeze'''
+        display.myprint("CRASH", 1)
+        return 0 #Crash

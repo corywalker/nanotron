@@ -9,12 +9,12 @@ def myprint(data, verbosity = 0, irc = None):
         logfile.write(data + "\n")
         logfile.close()
 
-def print_status(address, status1, status2=3, irc=None):
+def print_status(address, irc, status1, status2=3):
     fullstatus = "%8x: " % address
     #Adding first run
     if status1 == 0:
         fullstatus = fullstatus + "Crash!"
-        myprint(fullstatus)
+        myprint(fullstatus, 0, irc)
         return
     if status1 == 1: fullstatus = fullstatus + "Works! "
     if status1 == 2: fullstatus = fullstatus + "Freeze! "

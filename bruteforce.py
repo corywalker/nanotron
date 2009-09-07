@@ -12,25 +12,25 @@ CRASHPAYLOAD = struct.pack("<8I", 0xe3a030d3, 0xe121f003, 0xe3a03000, 0xe3a025f2
 
 def try_address(nanotron, address, irc = None):
     global FREEZEPAYLOAD, CRASHPAYLOAD
-    display.myprint ("Testing %8x..." % address)
+    display.myprint ("Testing %8x..." % address, 0, irc)
     status1 = try_file(nanotron, FREEZEPAYLOAD, address,  irc)
     if status1 == 0:
-        display.print_status(address, status1, irc=irc)
+        display.print_status(address, irc, status1)
         return
     status2 = try_file(nanotron, CRASHPAYLOAD, address,  irc)
-    display.print_status(address, status1, status2, irc)
+    display.print_status(address, irc, status1, status2)
 
 def try_file(nanotron, payload, address, irc = None):
     if not nanotron.is_mounted(): nanotron.disk_mode(irc)
     try:
         writeNote(payload, address, nanotron.IPODPATH)
     except IOError:
-        display.myprint("FIXME: read-only mount, rebooting")
+        display.myprint("FIXME: read-only mount, rebooting", 0, irc)
         nanotron.disk_mode(irc)
     time.sleep(config.NOTE_WAIT)
     nanotron.reboot(irc)
     time.sleep(config.BOOT_WAIT) 
-    nanotron.diskmodecombo(config.DISKMODE_WAIT)
+    nanotron.diskmodecombo(config.DISKMODE_COMBO_WAIT)
     return nanotron.get_status()
     
 def writeNote(payload, addr, path):
