@@ -1,12 +1,12 @@
 IPOD_PATH = '/media/ipod'
 BUTTON_FORCE = 60
 
-BOOT_WAIT = 37.5 #Time for iPod to boot (plus a little extra)
-DISKMODE_WAIT = 10 #Time for OS to mount iPod in disk mode
-NOTE_WAIT = 3 #Time to wait for note file to be written to iPod
-REBOOT_COMBO_WAIT = 5.5 #Time to hold down the reboot combo
+BOOT_WAIT = 38.5 #Time for iPod to boot (plus a little extra)
+DISKMODE_WAIT = 9 #Time for OS to mount iPod in disk mode
 DISKMODE_COMBO_WAIT = 12
-CRASH_THRESHOLD = 7
+
+REBOOT_COMBO_WAIT = 5.5 #Time to hold down the reboot combo
+NOTE_WAIT = 3 #Time to wait for note file to be written to iPod
 
 LOG_FILENAME = 'nanotron.log'
 LOG_VERBOSITY = 0

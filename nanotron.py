@@ -55,8 +55,8 @@ class Nanotron:
         display.myprint("Reboot combo down", 2)
         self.press_select()
         self.press_menu()
-        display.myprint("unmounting before reboot", 1)
-        if self.is_mounted(): os.system('umount /media/ipod')
+        #display.myprint("unmounting before reboot", 1)
+        #if self.is_mounted(): os.system('umount /media/ipod')
         display.myprint("waiting %u seconds for reboot" % seconds, 2)
         time.sleep(seconds)
         self.reset()
@@ -74,12 +74,16 @@ class Nanotron:
             self.reboot(irc)
             time.sleep(.25)
             self.diskmodecombo(config.DISKMODE_COMBO_WAIT)
-            start = time.time() #FIXME: might be incompatible on windows
+            time.sleep(config.DISKMODE_WAIT)
+            if not self.is_mounted():
+                display.myprint("Having trouble putting the iPod into disk mode!", 0, irc)
+            else: break
+            '''start = time.time() #FIXME: might be incompatible on windows
             while not self.is_mounted():
-                if time.time() - start > config.CRASH_THRESHOLD:
+                if time.time() - start > config.DISKMODE_WAIT:
                     display.myprint("Having trouble putting the iPod into disk mode!", 0, irc)
                     break
-            if self.is_mounted(): break
+            if self.is_mounted(): break'''
         display.myprint("entered disk mode...", 1, irc)
     def is_mounted(self):
         return os.path.exists(self.IPODPATH + "/Notes")
@@ -87,10 +91,18 @@ class Nanotron:
         if self.is_mounted():
             display.myprint("WORKS", 1)
             return 1 #Works
-        start = time.time() #FIXME: might be incompatible on windows
+        else:
+            time.sleep(config.DISKMODE_WAIT)
+            if self.is_mounted():
+                display.myprint("CRASH", 1)
+                return 0 #Crash
+            else:
+                display.myprint("FREEZE", 1)
+                return 2 #Freeze
+        '''start = time.time() #FIXME: might be incompatible on windows
         while not self.is_mounted():
-            if time.time() - start > config.CRASH_THRESHOLD:
+            if time.time() - start > config.FREEZE_THRESHOLD:
                 display.myprint("FREEZE", 1)
                 return 2 #Freeze
         display.myprint("CRASH", 1)
-        return 0 #Crash
+        return 0 #Crash'''
