@@ -1,3 +1,10 @@
-This depends on PyUSB patched version of nxt-python (contact cmwslw for patch)
+Dependencies:
+   PyUSB
+   nxt-python (latest SVN)
+   python-irclib
+
+nxt-python setup: http://code.google.com/p/nxt-python/wiki/Installation
 
 Edit configuration variables to suit your setup.
+
+This currently only supports NXT setups, but perhaps RCX support will be added
