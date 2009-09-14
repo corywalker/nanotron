@@ -1,8 +1,8 @@
 IPOD_PATH = '/media/ipod'
-BUTTON_FORCE = 60
+BUTTON_FORCE = 63
 
-BOOT_WAIT = 38.5 #Time for iPod to boot (plus a little extra)
-DISKMODE_WAIT = 13 #Time for OS to mount iPod in disk mode
+BOOT_WAIT = 36.5 #Time for iPod to boot (plus a little extra)
+DISKMODE_WAIT = 11 #Time for OS to mount iPod in disk mode
 DISKMODE_COMBO_WAIT = 12
 
 REBOOT_COMBO_WAIT = 5.5 #Time to hold down the reboot combo
